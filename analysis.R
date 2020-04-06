@@ -1,8 +1,20 @@
-#install.packages("ggbiplot")
-library(ggplot2)
+# Climate Divide Analysis
+# Authors: Mallory LaRusso, Jordan Lewis, Michelle Koop, Nicole Carr
+# Date 4/6/2020
+
+# Install package ggfortify
 install.packages("ggfortify")
+
+# Load libraries
+library(ggplot2)
 library(ggfortify)
 library(dplyr)
+
+# Rename columns of clean_raleigh_data
+# Legend:
+## ctw = Commute to work
+## _perc = percent of people, if there is not a "_perc" ending then the form of the data is the number of.
+## 
 clean_raleigh_data <- clean_raleigh_data %>%
   rename(
     employment_status = HC01_VC04,
@@ -150,17 +162,19 @@ clean_raleigh_data <- clean_raleigh_data %>%
     not_hispanic_perc = HD02_S122
   ) 
 
+# Rename separately due to errors in original run
 clean_raleigh_data <- clean_raleigh_data %>% 
   rename(
   ctw_mean_travel = HC01_VC36,
   ctw_mean_travel_perc = HC03_VC36
 )
 
+# Rename separately due to errors in original run
 clean_raleigh_data <- clean_raleigh_data %>% 
     rename(one_race = HD01_S077)
 
-clean_raleigh_data <- clean_raleigh_data %>% select(-contains("HD01")) %>% select(-contains("HD02"))
 
+clean_raleigh_data <- clean_raleigh_data %>% select(-contains("HD01")) %>% select(-contains("HD02"))
 
 
 first.analysis <- prcomp(raleigh_data[,c(208,209)], center=TRUE, scale=TRUE)
