@@ -60,7 +60,7 @@ for (h in raleigh_tracts$Tract){
   aug_cloud_cover = 0
   aug_count = 0
   
-  # Create a loop that maps tracts to zipcodes contained in that tract
+  # Create a loop that maps tracts to zip codes contained in that tract
   for (i in 1:dim(cross_reference)[1]){
     for (j in 1:dim(cross_reference)[2]){
       if(h == cross_reference[i,j] && !is.na(cross_reference[i,j])){
@@ -70,7 +70,7 @@ for (h in raleigh_tracts$Tract){
     }
   } 
   
-  # Traverse through zipcodes and continually sum all values for each of the following variables for June
+  # Traverse through zip codes and continually sum all values for each of the following variables for June
   for (k in 1:dim(raleigh_temps_june)[1]){
      if (raleigh_temps_june[k,1] %in% listo){
        june_count = june_count + 1 # Counter for total number of observations in June
@@ -90,6 +90,7 @@ for (h in raleigh_tracts$Tract){
     june_wind_gust_avg = june_wind_gust/june_count
     june_cloud_cover_avg = june_cloud_cover/june_count
     
+    # Traverse through zip codes and continually sum all values for each of the following variables for July
     for (k in 1:dim(raleigh_temps_july)[1]){
       if (raleigh_temps_july[k,1] %in% listo){
         july_count = july_count + 1 # Counter for total number of observations in July
@@ -109,6 +110,7 @@ for (h in raleigh_tracts$Tract){
     july_wind_gust_avg = july_wind_gust/july_count
     july_cloud_cover_avg = july_cloud_cover/july_count
     
+    # Traverse through zip codes and continually sum all values for each of the following variables for August
     for (k in 1:dim(raleigh_temps_august)[1]){
       if (raleigh_temps_august[k,1] %in% listo){
         aug_count = aug_count + 1 # Counter for total number of observations in August

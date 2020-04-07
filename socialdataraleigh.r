@@ -50,7 +50,7 @@ colnames <- c("Tract", "Total_Pop_Bracket", "MOE_Pop", "TOT_0_9.999", "MOE_0_9.9
 # Name the columns of 'brackets'
 names(brackets) <- colnames
 
-######################################## RACE DATA #################################################################################
+######################################## RACE DATA ##########################################################################################
 
 # Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project/RaceAndOtherCharactersticsByTract")
@@ -58,13 +58,13 @@ setwd("~/Desktop/2019/Climate Project/RaceAndOtherCharactersticsByTract")
 # Read in .csv that contains population race data
 race <- read.csv("DEC_10_SF1_SF1DP1_with_ann.csv")
 
-# Delete extraneous rows and columns
+# Delete extraneous rows, and alter columns
 race <- race[-1, c(2, 4, 154:261)]
 
 names(race)[1] <- "Tract"
 names(race)[2] <- "Tot_Pop"
 
-######################################## OCCUPATION DATA #################################################################################
+######################################## OCCUPATION DATA ###################################################################################
 
 # Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project/OccupationNumbersOfPopulation_PercentageInPoverty")
@@ -72,69 +72,102 @@ setwd("~/Desktop/2019/Climate Project/OccupationNumbersOfPopulation_PercentageIn
 # Read in .csv that contains occupation and industry data
 occupation <- read.csv("ACS_10_5YR_DP03_with_ann.csv")
 
-# Delete extraneous rows and columns
+# Delete extraneous rows, and alter columns
 occupation <- occupation[-1,c(2,4,5,72:183,512:515)]
 
+# Bind columns and name 1st element Tract
 percent_occupationdata <- occupation[,grepl("HC03_",names(occupation))]
 percent_occupationdata <- cbind(occupation$GEO.id2, percent_occupationdata)
 names(percent_occupationdata)[1] <- "Tract"
 
+# Bind columns and name 1st element Tract
 estimate_occupationdata <- occupation[,grepl("HC01_",names(occupation))]
 estimate_occupationdata <- cbind(occupation$GEO.id2, estimate_occupationdata)
 names(estimate_occupationdata)[1] <- "Tract"
 
-# Merge all aforemntioned data into social_data_raleigh
+# Merge all aforementioned data into social_data_raleigh
 bracketsandestimate <- merge(brackets,estimate_occupationdata, by.x="Tract")
 bracketsandestimateandmedians <- merge(bracketsandestimate, medians, by.x = "Tract")
 bemandpercent <- merge(bracketsandestimateandmedians, percent_occupationdata, by.x = "Tract")
 social_data_raleigh <- merge(bemandpercent,race,by.x = "Tract")
 
-######################################## SOCIAL VULERABILITY DATA #################################################################################
+######################################## SOCIAL VULERABILITY DATA ##########################################################################
+# Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project/EPHTN_M605_D_112817")
+
+# Read in .csv that contains social vulnerability index
 svi <- read.csv("data_112818.csv")
+
+# Alter columns of data frame
 svi <- svi[,c(3,6)]
+
+# Name 1st element Tract and 2nd element SVI
 names(svi)[1] <- "Tract"
 names(svi)[2] <- "SVI"
 
+# Merge all aforementioned data into all_social_data_1
 all_social_data1 <- merge(social_data_raleigh,svi,by.x= "Tract")
 
-######################################## TREE COVERAGE DATA #################################################################################
+######################################## TREE COVERAGE DATA ################################################################################
+# Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project/Forest Coverage")
 
+# Read in .csv that contains tree coverage data
 trees <- read.csv("data_114838.csv")
+
+# Alter columns in data frame
 trees <- trees[,c(3,6)]
+
+# Name 1st element Tract and 2nd element Tree_Coverage_Percent
 names(trees)[1] <- "Tract"
 names(trees)[2] <- "Tree_Coverage_Percent"
 
+########### Check this to make sure as.numeric did not alter data. If so, then change to as.character then as.numeric to preserve data
+# Convert to percent
 trees$Tree_Coverage_Percent <- as.numeric(gsub("%","", trees$Tree_Coverage_Percent))
 trees$Tree_Coverage_Percent <- trees$Tree_Coverage_Percent / 100
 
+# Merge into all_social_data_2
 all_social_data2 <- merge(all_social_data1,trees,by="Tract")
 
-######################################## WATER COVERAGE DATA #################################################################################
-
+######################################## WATER COVERAGE DATA ################################################################################
+# Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project/Water Coverage")
 
+# Read in .csv that contains water coverage data
 water <- read.csv("data_114646.csv")
+
+# Alter columns in data frame
 water <- water[,c(3,6)]
+
+# Name 1st element tract and 2nd element Water_coverage_Percent
 names(water)[1] <- "Tract"
 names(water)[2] <- "Water_Coverage_Percent"
+
+########### Check this to make sure as.numeric did not alter data. If so, then change to as.character then as.numeric to preserve data.
+# Convert to percent
 water$Water_Coverage_Percent <- as.numeric(gsub("%","", water$Water_Coverage_Percent))
 water$Water_Coverage_Percent <- water$Water_Coverage_Percent / 100
 
+# Merge into all_social_data3
 all_social_data3 <- merge(all_social_data2,water,by.x="Tract")
 
-########################################  RALEIGH TRACTS #################################################################################
-
+########################################  RALEIGH TRACTS ###################################################################################
+# Reset working directory to interact with other data
 setwd("~/Desktop/2019/Climate Project")
 
+# Read in .csv that contains census tract data
 raleigh_tracts <- read.csv("Raleigh Census Tracts.csv")
+
+# Delete extraneous rows
 raleigh_tracts <- raleigh_tracts[-8,]
 
+# Name raleigh_tracts 2nd element "Tract"
 names(raleigh_tracts)[2] <- "Tract"
 
-######################################## RALEIGH SOCIAL DATA #################################################################################
-
+######################################## RALEIGH SOCIAL DATA ###############################################################################
+# Merge into raleigh_data 
 raleigh_data <- merge(raleigh_tracts, all_social_data3, by.x = "Tract")
 
+# Delete extraneous columns
 raleigh_data <- raleigh_data[,-2]

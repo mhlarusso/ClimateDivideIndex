@@ -173,10 +173,11 @@ clean_raleigh_data <- clean_raleigh_data %>%
 clean_raleigh_data <- clean_raleigh_data %>% 
     rename(one_race = HD01_S077)
 
-
+# Filter and select columns that contain unecessary information in clean_raleigh_data and delete them
 clean_raleigh_data <- clean_raleigh_data %>% select(-contains("HD01")) %>% select(-contains("HD02"))
 
 
+# The following is still in the works:
 first.analysis <- prcomp(raleigh_data[,c(208,209)], center=TRUE, scale=TRUE)
 first.analysis <- prcomp(raleigh_data[,c(207,210)], center=TRUE, scale=TRUE)
 
